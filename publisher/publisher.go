@@ -1,4 +1,4 @@
-package main
+package publisher
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	"github.com/nsqio/go-nsq"
 )
 
-func main() {
+func createUser() {
 	user := &models.Users{
 		ID:   1,
 		Name: "reza",

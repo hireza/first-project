@@ -23,23 +23,27 @@ func main() {
 	conf := Config{}
 	conf.connectPosgres()
 	conf.connectMux()
+
+	// consumer.ConnectMSQ()
 }
 
-func (r *Config) connectMux() {
+func (r *Config) connectMux() error {
 	r.Router = mux.NewRouter()
 	r.Router.HandleFunc("/", r.GetUsers).Methods("GET")
 	r.Router.HandleFunc("/", r.CreateUser).Methods("POST")
 	http.ListenAndServe(":1234", r.Router)
+
+	return nil
 }
 
-func (c *Config) connectPosgres() {
+func (c *Config) connectPosgres() error {
 	var err error
 	c.DB, err = sqlx.Open("postgres", "postgres://postgres:postgres@localhost/postgres?sslmode=disable")
 	if err != nil {
 		log.Fatal("Unable to connect : ", err)
 	}
 
-	log.Print("Connected to DB", c.DB)
+	return nil
 }
 
 func (c *Config) GetUsers(w http.ResponseWriter, r *http.Request) {
@@ -53,7 +57,7 @@ func (c *Config) GetUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
-	var u Users
+	var u *models.Users
 	decode := json.NewDecoder(r.Body)
 	if err := decode.Decode(&u); err != nil {
 		log.Fatal("Invalid payload")
@@ -61,8 +65,9 @@ func (c *Config) CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer r.Body.Close()
+
 	if err := u.CreateUser(c.DB); err != nil {
-		log.Fatal(err.error())
+		log.Fatal(err)
 		return
 	}
 

@@ -38,17 +38,6 @@ func GetUsers(db *sqlx.DB) ([]models.Users, error) {
 	return users, nil
 }
 
-func (u *Users) CreateUser(db *sql.DB) error {
-	query := "INSERT INTO user_collection(Name, Age) VALUES($1, $2) RETURNING ID"
-	err := db.QueryRow(query, u.Name, u.Age).Scan(u.ID)
-
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (u *mysqlUser) GetUser(db *sql.DB) error {
 	return errors.New("Not implemented")
 }

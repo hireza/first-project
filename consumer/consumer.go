@@ -9,7 +9,7 @@ import (
 
 func main() {
 	wg := &sync.WaitGroup{}
-	wg.Add(2)
+	wg.Add(1)
 
 	decodeConfig := nsq.NewConfig()
 	c, err := nsq.NewConsumer("tokped_users", "users", decodeConfig)
@@ -20,11 +20,6 @@ func main() {
 	c.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
 		log.Println("Success add User")
 		log.Println(string(message.Body))
-		return nil
-	}))
-
-	c.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
-		log.Println("Counter +1")
 		return nil
 	}))
 
