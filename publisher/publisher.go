@@ -9,14 +9,8 @@ import (
 	"github.com/nsqio/go-nsq"
 )
 
-func createUser() {
-	user := &models.Users{
-		ID:   1,
-		Name: "reza",
-		Age:  22,
-	}
-
-	userJSON, err := json.Marshal(user)
+func CreateUser(u *models.Users) {
+	userJSON, err := json.Marshal(u)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -29,6 +23,20 @@ func createUser() {
 	}
 
 	err = p.Publish("tokped_users", []byte(string(userJSON)))
+	if err != nil {
+		log.Panic(err)
+	}
+}
+
+func IncrementCount() {
+	config := nsq.NewConfig()
+	p, err := nsq.NewProducer("127.0.0.1:4150", config)
+
+	if err != nil {
+		log.Panic(err)
+	}
+
+	err = p.Publish("tokped_count", []byte("a"))
 	if err != nil {
 		log.Panic(err)
 	}

@@ -1,12 +1,12 @@
 package repository
 
 import (
-	"database/sql"
-	"errors"
 	"log"
 
 	"github.com/hireza/first-project/models"
 	"github.com/jmoiron/sqlx"
+
+	_ "github.com/lib/pq"
 )
 
 type mysqlUser struct {
@@ -38,6 +38,9 @@ func GetUsers(db *sqlx.DB) ([]models.Users, error) {
 	return users, nil
 }
 
-func (u *mysqlUser) GetUser(db *sql.DB) error {
-	return errors.New("Not implemented")
+func CreateUser(db *sqlx.DB, u models.Users) error {
+	query := `INSERT INTO users_collection("Name","Age") VALUES($1, $2)`
+	db.QueryRow(query, u.Name, u.Age)
+
+	return nil
 }
