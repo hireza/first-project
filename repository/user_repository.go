@@ -28,7 +28,7 @@ func GetUsers(db *sqlx.DB) ([]models.Users, error) {
 
 	for rows.Next() {
 		var u models.Users
-		if err := rows.Scan(&u.ID, &u.Name, &u.Age); err != nil {
+		if err := rows.Scan(&u.ID, &u.Name); err != nil {
 			return nil, err
 		}
 
@@ -39,8 +39,8 @@ func GetUsers(db *sqlx.DB) ([]models.Users, error) {
 }
 
 func CreateUser(db *sqlx.DB, u models.Users) error {
-	query := `INSERT INTO users_collection("Name","Age") VALUES($1, $2)`
-	db.QueryRow(query, u.Name, u.Age)
+	query := `INSERT INTO users_collection("Name") VALUES($1)`
+	db.QueryRow(query, u.Name)
 
 	return nil
 }
